@@ -72,14 +72,18 @@ router.patch('/:id', async (req, res, next) => {
 router.delete('/:id', async (req, res, next) => {
     try{
         const {id} = req.params;
-        const results = await db.query('DELETE FROM invoices WHERE id=$1', [id]);
+        const results = await db.query(`DELETE FROM invoices WHERE id=$1 RETURNING id`, [id]);
+        if(results.rows.length === 0){
+            throw new ExpressError(`The invoice ID: ${id}, does not exist, please try again`, 404);
+        } 
+        
         return res.send({"status": "deleted"})
+        
 
     }catch(e){
         return next(e);
     }
 })
 
-router.get('/')
 
 module.exports = router;

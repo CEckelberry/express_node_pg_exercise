@@ -62,8 +62,12 @@ router.patch('/:code', async (req, res, next) => {
 router.delete('/:code', async (req, res, next) => {
     try{
         const {code} = req.params;
-        const results = await db.query('DELETE FROM companies WHERE code=$1', [code]);
-        return res.send({status: "deleted"})
+        const results = await db.query('DELETE FROM companies WHERE code=$1 RETURNING code', [code]);
+        if(results.rows.length == 0){
+            throw new ExpressError(`Can't update company with code ${code}`, 404)
+        } else {
+            return res.send({status: "deleted"})
+        }
         
     }catch(e){
         return next(e);

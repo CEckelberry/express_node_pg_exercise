@@ -1,4 +1,8 @@
 const {Client} = require("pg");
+// const types = Client.types;
+// types.setTypeParser(1114, function(stringValue) {
+//     return stringValue;
+// });
 
 let DB_URI;
 
